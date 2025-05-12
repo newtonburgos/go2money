@@ -62,11 +62,15 @@ class CustomTextFormField extends StatelessWidget {
             textFormFieldType == CustomTextFormFieldType.password
                 ? true
                 : false,
+        style: TextStyle(color: colors.primary),
         decoration: InputDecoration(
           filled: true,
           fillColor:
               bgColor ?? colors.primaryContainer, // tu mismo color lila claro
-          label: label != null ? Text(label!) : null,
+          label:
+              label != null
+                  ? Text(label!, style: TextStyle(color: colors.primary))
+                  : null,
           hintText: hintText,
           hintStyle: hintStyle ?? TextStyle(color: colors.primary),
           enabledBorder: border,
