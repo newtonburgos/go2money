@@ -19,8 +19,8 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'Go2Money',
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: AppTheme().getThemelightTheme(),
+      darkTheme: AppTheme().getThemeDarkTheme(),
       themeMode: themeMode,
       routerConfig: appRouter,
       supportedLocales: const [

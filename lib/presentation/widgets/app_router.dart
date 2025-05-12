@@ -1,5 +1,7 @@
+// import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:go2money/presentation/screens/settings/currencies/currencies.dart';
+import 'package:go2money/presentation/screens/settings/currencies/currency_list_page.dart';
 import 'package:go2money/presentation/screens/settings/settings.dart';
 import 'package:go2money/presentation/screens/tabs/accounts/accounts.dart';
 import 'package:go2money/presentation/screens/tabs/budgets/budgets.dart';
@@ -46,8 +48,8 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/currencies',
-              name: 'currencies',
-              builder: (context, state) => Currencies(),
+              name: CurrencyListPage.routeName,
+              builder: (context, state) => CurrencyListPage(),
               routes: [],
             ),
           ],
@@ -57,10 +59,15 @@ final appRouter = GoRouter(
   ],
 );
 
-class AppScaffold extends StatelessWidget {
+class AppScaffold extends StatefulWidget {
   const AppScaffold({super.key, required this.child});
   final Widget child;
 
+  @override
+  State<AppScaffold> createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends State<AppScaffold> {
   int _getBottomNavBarIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
     if (location.startsWith('/accounts')) return 0;
@@ -98,50 +105,120 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = _getBottomNavBarIndex(context);
+    var currentIndex = _getBottomNavBarIndex(context);
+    final colors = Theme.of(context).colorScheme;
+    // final iconList = <IconData>[
+    //   Icons.account_balance_wallet,
+    //   Icons.receipt_long,
+    //   Icons.bar_chart,
+    //   Icons.pie_chart_outline,
+    // ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Go2Money')),
-      body: child,
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
-            label: 'Cuentas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Facturas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Reportes',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart_outline),
-            label: 'Presupuesto',
-          ),
+      appBar: AppBar(
+        title: const Text('Go2Money'),
+        // backgroundColor: colors.primary,
+      ),
+      body: widget.child,
+      bottomNavigationBar: ConvexAppBar(
+        initialActiveIndex: currentIndex,
+        //activeColor: colors.primary,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            // colors.primary,
+            // colors.primary.withValues(alpha: 0.75),
+            // colors.primary.withValues(alpha: 0.5),
+            Color.fromRGBO(5, 150, 105, 1), // verde intenso
+            Color.fromRGBO(16, 185, 129, 1), // verde medio
+            Color.fromRGBO(52, 211, 153, 1), // verde claro
+          ],
+        ),
+        color: Colors.white,
+        style: TabStyle.react,
+        // activeColor: Colors.yellow,
+        items: [
+          TabItem(icon: Icons.account_balance_wallet, title: 'Cuentas'),
+          TabItem(icon: Icons.receipt_long, title: 'Facturas'),
+          TabItem(icon: Icons.dashboard, title: 'Dashboard'),
+          TabItem(icon: Icons.bar_chart, title: 'Reportes'),
+          TabItem(icon: Icons.pie_chart_outline, title: 'Presupuesto'),
         ],
-        currentIndex: currentIndex, // Usar el índice calculado
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor:
-            Colors.grey, // Añadir color para items no seleccionados
         onTap:
             (index) => _onItemTapped(
               context,
               index,
             ), // Implementar lógica de navegación
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: colors.primary,
+      //   shape: const StadiumBorder(),
+      //   onPressed: () => _onItemTapped(context, 4),
+      //   child: Icon(
+      //     Icons.dashboard,
+      //     color: currentIndex == 4 ? Colors.white : colors.onPrimaryContainer,
+      //   ),
+      //   //params
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // bottomNavigationBar: AnimatedBottomNavigationBar(
+      //   backgroundColor: colors.primary,
+      //   inactiveColor: colors.onPrimaryContainer,
+
+      //   activeColor: Colors.white,
+      //   gapLocation: GapLocation.center,
+      //   icons: iconList,
+      //   activeIndex: currentIndex,
+      //   notchSmoothness: NotchSmoothness.softEdge,
+      //   leftCornerRadius: 5,
+      //   rightCornerRadius: 5,
+      //   // notchMargin: 10,
+      //   //onTap: (int) {},
+      //   //onTap: (index) => setState(() => _onItemTapped(context, index), //currentIndex = index),
+      //   onTap:
+      //       (index) => _onItemTapped(
+      //         context,
+      //         index,
+      //       ), // Implementar lógica de navegación
+      //   //other params
+      // ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.account_balance_wallet),
+      //       label: 'Cuentas',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.receipt_long),
+      //       label: 'Facturas',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.dashboard),
+      //       label: 'Dashboard',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.bar_chart),
+      //       label: 'Reportes',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.pie_chart_outline),
+      //       label: 'Presupuesto',
+      //     ),
+      //   ],
+      //   currentIndex: currentIndex, // Usar el índice calculado
+      //   onTap:
+      //       (index) => _onItemTapped(
+      //         context,
+      //         index,
+      //       ), // Implementar lógica de navegación
+      // ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
+            DrawerHeader(
+              decoration: BoxDecoration(color: colors.primary),
               child: Column(
                 // Usar Column para foto y nombre
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +228,7 @@ class AppScaffold extends StatelessWidget {
                     // Placeholder para foto de usuario
                     radius: 30,
                     backgroundColor: Colors.white,
-                    child: Icon(Icons.person, size: 30, color: Colors.blue),
+                    child: Icon(Icons.person, size: 30, color: colors.primary),
                   ),
                   SizedBox(height: 8),
                   Text(
@@ -167,7 +244,10 @@ class AppScaffold extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.account_balance_wallet),
+              leading: Icon(
+                Icons.account_balance_wallet,
+                color: colors.primary,
+              ),
               title: const Text('Cuentas'),
               onTap:
                   () => _onDrawerItemTapped(
@@ -176,7 +256,7 @@ class AppScaffold extends StatelessWidget {
                   ), // Navegar a /accounts
             ),
             ListTile(
-              leading: const Icon(Icons.receipt_long),
+              leading: Icon(Icons.receipt_long, color: colors.primary),
               title: const Text('Facturas'),
               onTap:
                   () => _onDrawerItemTapped(
@@ -185,7 +265,7 @@ class AppScaffold extends StatelessWidget {
                   ), // Navegar a /invoices
             ),
             ListTile(
-              leading: const Icon(Icons.bar_chart),
+              leading: Icon(Icons.bar_chart, color: colors.primary),
               title: const Text('Reportes'),
               onTap:
                   () => _onDrawerItemTapped(
@@ -194,7 +274,7 @@ class AppScaffold extends StatelessWidget {
                   ), // Navegar a /reports
             ),
             ListTile(
-              leading: const Icon(Icons.pie_chart_outline),
+              leading: Icon(Icons.pie_chart_outline, color: colors.primary),
               title: const Text('Presupuesto'),
               onTap:
                   () => _onDrawerItemTapped(
@@ -203,7 +283,7 @@ class AppScaffold extends StatelessWidget {
                   ), // Navegar a /budgets
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
+              leading: Icon(Icons.settings, color: colors.primary),
               title: const Text('Configuración'),
               onTap:
                   () => _onDrawerItemTapped(
